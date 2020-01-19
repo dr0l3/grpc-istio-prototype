@@ -1,0 +1,38 @@
+syntax = "proto2";
+
+package conversations;
+
+message Conversation {
+    required int32 id = 1;
+    optional string subject = 2;
+    required int32 userId = 3;
+}
+
+message CreateConversationRequest {
+    optional string subject = 1;
+    required int32 creator = 2;
+}
+
+message CreateConversationResponse {
+    required Conversation conversation = 1;
+}
+
+message GetConversationResponse {
+    optional Conversation conversation = 1;
+}
+
+message GetConversationRequest {
+    required int32 id = 1;
+}
+
+message AddCommentToConversation {
+    required int32 conversationId = 1;
+}
+
+
+
+
+service ConversationService {
+    rpc Create (CreateConversationRequest) returns (CreateConversationResponse);
+    rpc GetById (GetConversationRequest) returns (GetConversationResponse);
+}

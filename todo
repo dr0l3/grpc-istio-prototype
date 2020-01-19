@@ -1,0 +1,10 @@
+- user service
+- conversation service
+    - Multiproject setup
+- rest api
+- local deployment
+- kubernetes deployment
+- istio injection
+- personal environment
+    - send chosen environment in http-header
+- ZIO integration

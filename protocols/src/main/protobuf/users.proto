@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package users;
+
+message CreateUserRequest {
+    required string name = 1;
+}
+
+message CreateUserResponse {
+    required int32 id = 1;
+    required string name = 2;
+}
+
+message GetUserRequest {
+    required int32 id = 1;
+}
+
+message GetUserResponse {
+    optional User user = 1;
+}
+
+message User {
+    required int32 id = 1;
+    required string name = 2;
+}
+
+
+
+service UserService {
+    rpc Create (CreateUserRequest) returns (User);
+    rpc GetById (GetUserRequest) returns (GetUserResponse);
+}

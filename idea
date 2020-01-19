@@ -1,0 +1,23 @@
+Idea
+- Users can create conversations and comments to them
+- Conversation can contain messages and comments
+- messages stored in-memory
+- comments gotten from jsonplaceholder
+
+
+Facets to test
+- rest gateway
+- scala pb for services
+- rest request as part of backend service
+- streaming
+
+Tech to test
+- gRPC + scala
+- istio
+
+Functionality to verify
+- Routing
+    - Canary
+    - Rainbow deployment
+- Distributed tracing
+- shadow traffic
