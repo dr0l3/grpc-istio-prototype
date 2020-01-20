@@ -9,3 +9,6 @@
     - send chosen environment in http-header
 - ZIO integration
 - monitoring
+- pulumi
+- upgrade of istio
+- shared definitions (e.g. conversation)
