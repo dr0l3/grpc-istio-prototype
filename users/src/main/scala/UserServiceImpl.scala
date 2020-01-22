@@ -18,6 +18,7 @@ class UserServiceImpl extends UserServiceGrpc.UserService{
   }
 
   override def getById(request: GetUserRequest): Future[GetUserResponse] = Future {
+    println(s"Attempt to fetch user ${request}")
     GetUserResponse(userDb.find(_.id == request.id))
   }
 }

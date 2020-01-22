@@ -8,6 +8,7 @@ spec:
   ports:
     - port: 8081
       name: grpc
+      protocol: TCP
   type: NodePort
 
 ---

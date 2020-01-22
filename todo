@@ -3,11 +3,16 @@
     - Multiproject setup
 - rest api [done]
 - local deployment [done]
-- kubernetes deployment
-- docker file
-- istio injection
+- kubernetes deployment [done]
+- docker file [done]
+- istio injection [done]
 - personal environment
+    - istio routing between two version
+        - version configurable with env param
     - send chosen environment in http-header
+        - log header in gateway
+        - log header in user service
+        - routing based onn header
 - ZIO integration
 - monitoring
 - pulumi
