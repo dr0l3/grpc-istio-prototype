@@ -15,9 +15,9 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: users
+  name: users-1
   labels:
-    app: users
+    app: users-1
 spec:
   replicas: 1
   template:
@@ -25,6 +25,7 @@ spec:
       name: users
       labels:
         app: users
+        version: "1"
     spec:
       containers:
         - name: users
@@ -37,3 +38,33 @@ spec:
   selector:
     matchLabels:
       app: users
+      version: "1"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-2
+  labels:
+    app: users-2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: users
+      labels:
+        app: users
+        version: "2"
+    spec:
+      containers:
+        - name: users
+          image: dr0l3/grpc-users
+          ports:
+            - containerPort: 8081
+              name: grpc
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: users
+      version: "2"
