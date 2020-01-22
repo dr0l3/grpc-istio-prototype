@@ -14,9 +14,19 @@ import org.http4s.circe._
 import io.circe.generic.auto._
 import org.http4s.circe.CirceEntityEncoder._
 
+import pureconfig._
+import pureconfig.generic.auto._
+
+case class RestApiConfig(userAddress: Option[String], conversationAddress: Option[String])
+
 object RestApi extends IOApp{
 
-  val channel = ManagedChannelBuilder.forAddress("localhost", 8081).usePlaintext().build()
+  val config = ConfigSource.default.load[RestApiConfig].fold(failure => {
+    println(failure.prettyPrint())
+    throw new RuntimeException("FAIL")
+  }, config => config)
+
+  val channel = ManagedChannelBuilder.forAddress(config.userAddress.getOrElse("localhost"), 8081).usePlaintext().build()
 
   val userClient = UserServiceGrpc.stub(channel)
 

@@ -9,8 +9,6 @@ scalaVersion := "2.12.10"
 
 val http4sVersion = "0.20.15"
 val http4sSettings = Seq(
-
-
   libraryDependencies ++= Seq(
     "org.http4s" %% "http4s-dsl" % http4sVersion,
     "org.http4s" %% "http4s-blaze-server" % http4sVersion,
@@ -19,6 +17,10 @@ val http4sSettings = Seq(
     "io.circe" %% "circe-generic" % "0.11.2",
     "io.circe" %% "circe-literal" % "0.11.2"
   )
+)
+
+val baseDependencies = Seq(
+  libraryDependencies += "com.github.pureconfig" %% "pureconfig" % "0.12.2"
 )
 
 
@@ -45,21 +47,27 @@ lazy val protocols = (project in file("protocols"))
 lazy val users =(project in file("users"))
   .settings(
     grpcDependencies,
-    grpcSettings
+    grpcSettings,
+    baseDependencies
   ).dependsOn(protocols)
+  .enablePlugins(JavaAppPackaging,DockerPlugin)
 
 lazy val conversations = (project in file("conversations"))
   .settings(
     grpcDependencies,
-    grpcSettings
+    grpcSettings,
+    baseDependencies
   ).dependsOn(users, protocols)
+  .enablePlugins(JavaAppPackaging,DockerPlugin)
 
 lazy val gateway = (project in file("rest"))
   .dependsOn(users, conversations, protocols)
   .settings(
     scalacOptions ++= Seq("-Ypartial-unification"),
-    http4sSettings
+    http4sSettings,
+    baseDependencies
   )
+  .enablePlugins(JavaAppPackaging,DockerPlugin)
 
 lazy val root = (project in file("."))
   .aggregate(gateway, users, conversations, protocols)
