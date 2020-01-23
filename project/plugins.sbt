@@ -1,8 +1,9 @@
 
-addSbtPlugin("com.thesamet" % "sbt-protoc" % "0.99.25")
+//addSbtPlugin("com.thesamet" % "sbt-protoc" % "0.99.25")
 
-libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.8.4"
+//libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.8.4"
 
-addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+//addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.5.1")
+addSbtPlugin("org.lyranthe.fs2-grpc" % "sbt-java-gen" % "0.6.0")

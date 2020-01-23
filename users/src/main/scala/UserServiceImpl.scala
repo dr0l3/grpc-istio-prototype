@@ -1,9 +1,16 @@
+import cats.effect.{ExitCode, IO, IOApp}
 import io.grpc._
 import users.users._
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import org.lyranthe.fs2_grpc.java_runtime.implicits._
+import fs2._
+import cats.effect.IO
+import fs2._
+import io.grpc._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserServiceImpl extends UserServiceGrpc.UserService{
   val userDb = ListBuffer.empty[User]
@@ -23,7 +30,12 @@ class UserServiceImpl extends UserServiceGrpc.UserService{
 }
 
 object UserRunner extends App {
-  val serverDef = ServerInterceptors.intercept(UserServiceGrpc.bindService(new UserServiceImpl(), ExecutionContext.global), new Zomg())
+
+
+  val serverDef: ServerServiceDefinition = ServerInterceptors.intercept(UserServiceGrpc.bindService(new UserServiceImpl(), ExecutionContext.global), new Zomg())
+
+
+
 
   val server = ServerBuilder
     .forPort(8081)

@@ -26,23 +26,24 @@ val baseDependencies = Seq(
 
 val grpcDependencies = Seq(
   libraryDependencies ++= Seq(
-    "com.thesamet.scalapb" %% "compilerplugin" % "0.9.4",
-    "io.grpc" % "grpc-netty" % scalapb.compiler.Version.grpcJavaVersion,
-    "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion
+    "io.grpc" % "grpc-netty-shaded" % scalapb.compiler.Version.grpcJavaVersion
+    //"com.thesamet.scalapb" %% "compilerplugin" % "0.9.4",
+    //"io.grpc" % "grpc-netty" % scalapb.compiler.Version.grpcJavaVersion,
+    //"com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion
   )
 )
 
 val grpcSettings = Seq(
-  PB.targets in Compile := Seq(
-    scalapb.gen() -> (sourceManaged in Compile).value
-  )
+  //PB.targets in Compile := Seq(
+   // scalapb.gen() -> (sourceManaged in Compile).value
+  //
 )
 
 lazy val protocols = (project in file("protocols"))
   .settings(
     grpcDependencies,
     grpcSettings
-  )
+  ).enablePlugins(Fs2Grpc)
 
 lazy val users =(project in file("users"))
   .settings(

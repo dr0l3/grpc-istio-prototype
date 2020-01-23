@@ -6,7 +6,7 @@
 - kubernetes deployment [done]
 - docker file [done]
 - istio injection [done]
-- personal environment
+- personal environment [done]
     - istio routing between two version [done]
         - version configurable with env param [done]
     - send chosen environment in http-header [done]
@@ -23,20 +23,28 @@
     - pricing
         - Team Pro: 225$/month for 25 users + 75$/month for each extra user (!)
         - Enterprise: something else
-- upgrade of istio
+- upgrade of istio [done]
     - It seem they have documented how to do this
     - https://istio.io/docs/setup/upgrade/
     - https://istio.io/docs/setup/upgrade/cni-helm-upgrade/
-- scala3
+- scala3 [done]
 - mu-scala [done]
     - uses final tagless \_(ツ)_/
-- ZIO/IO integration
+    - doesnt seem to offer anything that below stuff doesnt already do
+- ZIO/IO integration [done]
     - macros looks cumbersome... macro paradise not supported
     - https://github.com/fiadliel/fs2-grpc <-- seems like it add support for IO/fs2
+        - Simple case works
+            - sealed traits
+            - streams
+            - options
+            - proto3
+        - Built on top of scalapb
+        - Looks ready for scala3!!
     - ClientCalls.scala + https://github.com/scalapb/ScalaPB/issues/523 <- interesting files to implementing ZIO/IO/Fs2 support directly into gRPC
 - shared definitions (e.g. conversation) [done]
     - Its possible to include files in jarfiles: https://stackoverflow.com/questions/25310052/include-generated-resources-in-a-jar-sbt
 
-istio experiments
+istio experimentsz
 - routing to non-existent destination
 - competing virtual services
