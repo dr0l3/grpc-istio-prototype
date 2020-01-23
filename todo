@@ -12,9 +12,21 @@
     - send chosen environment in http-header [done]
         - log header in gateway [done]
         - log header in user service [done]
-        - routing based onn header
-- ZIO integration
-- monitoring
+        - routing based onn header [done]
+- monitoring [done]
+    - (https://github.com/grpc-ecosystem/java-grpc-prometheus)
+    - There is no reason why our existing jvm instrumentation shouldn't work
+    - Simple dashboards seem to work
+    - jaeger seems to work out of the box
+    - kiali seems to work out of the box (admin/admin)
 - pulumi
 - upgrade of istio
 - shared definitions (e.g. conversation)
+- scala3
+- mu-scala
+- ZIO integration
+
+
+istio experiments
+- routing to non-existent destination
+- competing virtual services
