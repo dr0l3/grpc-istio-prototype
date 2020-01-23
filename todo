@@ -20,12 +20,22 @@
     - jaeger seems to work out of the box
     - kiali seems to work out of the box (admin/admin)
 - pulumi
+    - pricing
+        - Team Pro: 225$/month for 25 users + 75$/month for each extra user (!)
+        - Enterprise: something else
 - upgrade of istio
-- shared definitions (e.g. conversation)
+    - It seem they have documented how to do this
+    - https://istio.io/docs/setup/upgrade/
+    - https://istio.io/docs/setup/upgrade/cni-helm-upgrade/
 - scala3
-- mu-scala
-- ZIO integration
-
+- mu-scala [done]
+    - uses final tagless \_(ツ)_/
+- ZIO/IO integration
+    - macros looks cumbersome... macro paradise not supported
+    - https://github.com/fiadliel/fs2-grpc <-- seems like it add support for IO/fs2
+    - ClientCalls.scala + https://github.com/scalapb/ScalaPB/issues/523 <- interesting files to implementing ZIO/IO/Fs2 support directly into gRPC
+- shared definitions (e.g. conversation) [done]
+    - Its possible to include files in jarfiles: https://stackoverflow.com/questions/25310052/include-generated-resources-in-a-jar-sbt
 
 istio experiments
 - routing to non-existent destination
