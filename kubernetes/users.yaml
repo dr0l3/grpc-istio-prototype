@@ -33,7 +33,7 @@ spec:
           ports:
             - containerPort: 8081
               name: grpc
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
       restartPolicy: Always
   selector:
     matchLabels:
@@ -62,7 +62,7 @@ spec:
           ports:
             - containerPort: 8081
               name: grpc
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
       restartPolicy: Always
   selector:
     matchLabels:

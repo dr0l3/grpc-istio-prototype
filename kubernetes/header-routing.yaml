@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: users
+spec:
+  hosts:
+    - "users"
+  http:
+    - match:
+        - headers:
+            x-custom-header:
+              exact: rune
+      route:
+        - destination:
+            host: users
+            subset: green
+    - route:
+      - destination:
+          host: users
+          subset: blue
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: users
+spec:
+  host: users
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+  subsets:
+    - name: blue
+      labels:
+        version: "1"
+    - name: green
+      labels:
+        version: "2"

@@ -7,11 +7,11 @@
 - docker file [done]
 - istio injection [done]
 - personal environment
-    - istio routing between two version
-        - version configurable with env param
-    - send chosen environment in http-header
-        - log header in gateway
-        - log header in user service
+    - istio routing between two version [done]
+        - version configurable with env param [done]
+    - send chosen environment in http-header [done]
+        - log header in gateway [done]
+        - log header in user service [done]
         - routing based onn header
 - ZIO integration
 - monitoring

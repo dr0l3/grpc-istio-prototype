@@ -29,7 +29,7 @@ spec:
       containers:
         - name: gateway
           image: dr0l3/grpc-gateway
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
