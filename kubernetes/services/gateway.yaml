@@ -38,6 +38,10 @@ spec:
               value: "users"
             - name: CONVERSATION_ADRESS
               value: "conversations"
+            - name: MESSAGES_ADDRESS
+              value: "messages"
+            - name: ORCHESTATOR_ADDRESS
+              value: "orchestrator"
       restartPolicy: Always
   selector:
     matchLabels:

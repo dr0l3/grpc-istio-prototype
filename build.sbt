@@ -53,6 +53,22 @@ lazy val users =(project in file("users"))
   ).dependsOn(protocols)
   .enablePlugins(JavaAppPackaging,DockerPlugin)
 
+lazy val messages =(project in file("message"))
+  .settings(
+    grpcDependencies,
+    grpcSettings,
+    baseDependencies
+  ).dependsOn(protocols)
+  .enablePlugins(JavaAppPackaging,DockerPlugin)
+
+lazy val orchestator =(project in file("orchestator"))
+  .settings(
+    grpcDependencies,
+    grpcSettings,
+    baseDependencies
+  ).dependsOn(protocols)
+  .enablePlugins(JavaAppPackaging,DockerPlugin)
+
 lazy val conversations = (project in file("conversations"))
   .settings(
     grpcDependencies,
@@ -62,7 +78,7 @@ lazy val conversations = (project in file("conversations"))
   .enablePlugins(JavaAppPackaging,DockerPlugin)
 
 lazy val gateway = (project in file("rest"))
-  .dependsOn(users, conversations, protocols)
+  .dependsOn(protocols)
   .settings(
     scalacOptions ++= Seq("-Ypartial-unification"),
     http4sSettings,
@@ -71,4 +87,4 @@ lazy val gateway = (project in file("rest"))
   .enablePlugins(JavaAppPackaging,DockerPlugin)
 
 lazy val root = (project in file("."))
-  .aggregate(gateway, users, conversations, protocols)
+  .aggregate(gateway, users, conversations, protocols, orchestator, messages)

@@ -1,0 +1,35 @@
+syntax = "proto2";
+
+package messages;
+
+message CreateMessageRequest {
+    required int32 conversationId = 1;
+    required string text = 2;
+    optional string link = 3;
+}
+
+message CreateMessageResponse {
+    optional Message message = 1;
+}
+
+message GetMessagesByConversationRequest {
+    required int32 conversationId = 1;
+}
+
+message GetMessagesByConversationResponse {
+    repeated Message conversationId = 1;
+}
+
+message Message {
+    required int32 id = 1;
+    required int32 conversationId = 2;
+    required string text = 3;
+    optional string link = 4;
+}
+
+
+
+service MessageService {
+    rpc Create (CreateMessageRequest) returns (CreateMessageResponse);
+    rpc GetByConversation (GetMessagesByConversationRequest) returns (GetMessagesByConversationResponse);
+}

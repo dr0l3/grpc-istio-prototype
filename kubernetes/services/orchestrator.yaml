@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orchestrator
+spec:
+  selector:
+    app: orchestrator
+  ports:
+    - port: 8083
+      name: grpc
+      protocol: TCP
+  type: NodePort
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orchestrator-1
+  labels:
+    app: orchestrator-1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: orchestrator
+      labels:
+        app: orchestrator
+        version: "1"
+    spec:
+      containers:
+        - name: orchestrator
+          image: dr0l3/grpc-orchestator
+          ports:
+            - containerPort: 8083
+              name: grpc
+          imagePullPolicy: Always
+          env:
+            - name: USER_ADRESS
+              value: "users"
+            - name: CONVERSATION_ADRESS
+              value: "conversations"
+            - name: MESSAGES_ADDRESS
+              value: "messages"
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: orchestrator
+      version: "1"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orchestrator-2
+  labels:
+    app: orchestrator-2
+spec:
+  replicas: 0
+  template:
+    metadata:
+      name: orchestrator
+      labels:
+        app: orchestrator
+        version: "2"
+    spec:
+      containers:
+        - name: orchestrator
+          image: dr0l3/grpc-orchestrator
+          ports:
+            - containerPort: 8083
+              name: grpc
+          imagePullPolicy: Always
+          env:
+            - name: USER_ADRESS
+              value: "users"
+            - name: CONVERSATION_ADRESS
+              value: "conversations"
+            - name: MESSAGES_ADDRESS
+              value: "messages"
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: orchestrator
+      version: "2"

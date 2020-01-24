@@ -13,11 +13,12 @@
         - log header in gateway [done]
         - log header in user service [done]
         - routing based onn header [done]
-- monitoring [done]
+- monitoring
     - (https://github.com/grpc-ecosystem/java-grpc-prometheus)
     - There is no reason why our existing jvm instrumentation shouldn't work
     - Simple dashboards seem to work
     - jaeger seems to work out of the box
+        - Need to propagate tracing headers
     - kiali seems to work out of the box (admin/admin)
 - pulumi
     - pricing

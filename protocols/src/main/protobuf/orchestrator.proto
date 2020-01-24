@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package orchestrator;
+
+import "conversations.proto";
+import "users.proto";
+import "messages.proto";
+
+message GetConversationDetailsRequest {
+    required int32 id = 1;
+}
+
+message GetConversationDetailsResponse {
+    optional ConversationDetails details = 1;
+}
+
+message ConversationDetails {
+    required users.User requester = 1;
+    required conversations.Conversation conversation = 2;
+    repeated messages.Message messages = 3;
+}
+
+service OrchestratorService {
+    rpc GetById (GetConversationDetailsRequest) returns (GetConversationDetailsResponse);
+}
