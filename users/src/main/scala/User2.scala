@@ -13,12 +13,16 @@ import scala.concurrent.Future
 class User2 extends UserServiceFs2Grpc[IO, Metadata] {
   val users = ListBuffer.empty[User]
   override def create(request: CreateUserRequest, ctx: Metadata): IO[User] = IO {
+    println("SERVER INTERCEPT")
+    println(ctx)
     val user = User(users.size, request.name)
     users += user
     user
   }
 
   override def getById(request: GetUserRequest, ctx: Metadata): IO[GetUserResponse] = IO{
+    println("SERVER INTERCEPT")
+    println(ctx)
     GetUserResponse(users.find(_.id == request.id))
   }
 }
@@ -26,7 +30,7 @@ class User2 extends UserServiceFs2Grpc[IO, Metadata] {
 
 object Main extends IOApp {
 
-  val userService = ServerInterceptors.intercept(UserServiceFs2Grpc.bindService(new User2()), new Zomg())
+  val userService = ServerInterceptors.intercept(UserServiceFs2Grpc.bindService(new User2()))
   override def run(args: List[String]): IO[ExitCode] = {
     NettyServerBuilder
       .forPort(8081)

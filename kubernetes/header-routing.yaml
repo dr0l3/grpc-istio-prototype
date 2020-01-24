@@ -8,7 +8,7 @@ spec:
   http:
     - match:
         - headers:
-            x-custom-header:
+            env:
               exact: rune
       route:
         - destination:

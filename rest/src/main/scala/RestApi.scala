@@ -1,26 +1,20 @@
 import cats.effect.{ExitCode, IO, IOApp}
-import cats.effect._
-import org.http4s._
-import org.http4s.dsl.io._
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import cats.implicits._
-import io.grpc.{CallOptions, Channel, ClientCall, ClientInterceptor, ClientInterceptors, Context, ForwardingClientCall, ManagedChannelBuilder, Metadata, MethodDescriptor}
-import org.http4s.server.blaze._
+import io.circe.generic.auto._
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder
+import io.grpc._
+import org.http4s._
+import org.http4s.circe.CirceEntityEncoder._
+import org.http4s.dsl.io._
 import org.http4s.implicits._
 import org.http4s.server.Router
-import users.users.{CreateUserRequest, GetUserRequest, User, UserServiceGrpc}
-import org.http4s.circe._
-import io.circe.generic.auto._
-import io.grpc.Metadata.Key
-import io.grpc.stub.MetadataUtils
-import org.http4s.circe.CirceEntityEncoder._
+import org.http4s.server.blaze._
 import pureconfig._
-import pureconfig.generic.auto._
+import users.users.{CreateUserRequest, GetUserRequest, User, UserServiceFs2Grpc}
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
-case class RestApiConfig(userAddress: Option[String], conversationAddress: Option[String])
+case class RestApiConfig(userAddress: String, conversationAddress: String)
 
 
 class EnviromentInterceptor extends ClientInterceptor {
@@ -29,7 +23,6 @@ class EnviromentInterceptor extends ClientInterceptor {
       override def start(responseListener: ClientCall.Listener[RespT], headers: Metadata): Unit =  {
         println("CLIENT INTERCEPTOR")
         println(headers)
-        println(Constants.envContext.get())
         headers.put(Metadata.Key.of("x-custom-header", Metadata.ASCII_STRING_MARSHALLER), Constants.envContext.get())
         super.start(responseListener, headers)
       }
@@ -39,37 +32,24 @@ class EnviromentInterceptor extends ClientInterceptor {
 
 object Constants {
   val envContext = Context.keyWithDefault("env", "base")
+  val metadataKey = Metadata.Key.of("env", Metadata.ASCII_STRING_MARSHALLER)
 }
 
-object RestApi extends IOApp{
-
-  val config = ConfigSource.default.load[RestApiConfig].fold(failure => {
-    println(failure.prettyPrint())
-    throw new RuntimeException("FAIL")
-  }, config => config)
-
-  val baseChan = ManagedChannelBuilder.forAddress(config.userAddress.getOrElse("localhost"), 8081).usePlaintext().build()
-  val channel = ClientInterceptors.intercept(baseChan,new EnviromentInterceptor())
-
-  val userClient = UserServiceGrpc.stub(baseChan).build(channel, CallOptions.DEFAULT)
-
-
-  def getUser(userId: Int, environment: String): Future[Option[User]] = {
+class RestApi(userClient: UserServiceFs2Grpc[IO, String]) {
+  implicit val css = IO.contextShift(ExecutionContext.global)
+  implicit val timer = IO.timer(ExecutionContext.global)
+  def getUser(userId: Int, environment: String): IO[Option[User]] = {
     println(s"Attempt to find user with id $userId in $environment")
-    Context.current().withValue(Constants.envContext, environment).call(() =>{
-      userClient.getById(GetUserRequest(userId))
-        .map{res =>
-          println(res.user)
-          res
-        }
-        .map(_.user)
-    })
+    userClient.getById(GetUserRequest(userId), environment)
+      .map{res =>
+        println(res.user)
+        res
+      }
+      .map(_.user)
   }
 
-  def createUser(name: String, environment: String): Future[User]= {
-    Context.current().withValue(Constants.envContext, environment).call(() => {
-      userClient.create(CreateUserRequest(name))
-    })
+  def createUser(name: String, environment: String): IO[User]= {
+    userClient.create(CreateUserRequest(name), environment)
   }
 
   def envFromReq(req: Request[IO]): String = {
@@ -78,26 +58,42 @@ object RestApi extends IOApp{
     env
   }
 
-  val service = HttpRoutes.of[IO] {
-    case req @ GET -> Root / "users" / IntVar(userId) =>
-      IO.fromFuture(IO(getUser(userId, envFromReq(req)))).flatMap(Ok(_))
-    case req @POST -> Root / "users" / name  =>
-      IO.fromFuture(IO(createUser(name, envFromReq(req)))).flatMap(Ok(_))
+  def getHttpApp() = {
+    val service = HttpRoutes.of[IO] {
+      case req @ GET -> Root / "users" / IntVar(userId) =>
+        getUser(userId, envFromReq(req)).flatMap(Ok(_))
+      case req @ POST -> Root / "users" / name  =>
+        createUser(name, envFromReq(req)).flatMap(Ok(_))
+    }
+
+    Router("/" -> service).orNotFound
   }
+}
 
-  val services = service
+object RestApiRunner extends IOApp{
 
-  val httpApp = Router("/" -> services).orNotFound
+  val config = ConfigSource.default.load[RestApiConfig].fold(err => throw new RuntimeException(err.prettyPrint()), identity)
 
   override def run(args: List[String]): IO[ExitCode] = {
 
+    def envToMetadata(env: String) = {
+      val metadata = new Metadata()
+      metadata.put(Constants.metadataKey, env)
+      metadata
+    }
+
+    val basechan2 = NettyChannelBuilder.forAddress(config.userAddress, 8081).usePlaintext().build()
+    val chan2 =  ClientInterceptors.intercept(basechan2,new EnviromentInterceptor())
+
+    val client2 = UserServiceFs2Grpc.client[IO, String](chan2,envToMetadata)
+    val app = new RestApi(client2)
+
     BlazeServerBuilder[IO]
       .bindHttp(8080, "localhost")
-      .withHttpApp(httpApp)
+      .withHttpApp(app.getHttpApp())
       .serve
       .compile
       .drain
       .as(ExitCode.Success)
-
   }
 }
