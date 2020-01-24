@@ -6,7 +6,11 @@ go to microk8s.io
 
 # install service
 
-``mkcl apply -f kubernetes``
+```
+mkcl apply -f kubernetes/users.yaml
+mkcl apply -f kubernetes/gateway.yaml
+```
+
 
 # test
 
@@ -29,3 +33,13 @@ add user
 test
 
 ``curl localhost:32545/users/0``
+
+# test routing header routing
+
+```
+mkcl apply -f kubernetes/header-routing.yaml
+curl localhost:32545/users/0
+curl localhost:32545/users/0 -H "env: rune"
+```
+
+Should now see that you can decide which version to hit by using the header
