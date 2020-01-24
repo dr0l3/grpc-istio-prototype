@@ -10,6 +10,7 @@ import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.blaze._
 import pureconfig._
+import pureconfig.generic.auto._
 import users.users.{CreateUserRequest, GetUserRequest, User, UserServiceFs2Grpc}
 
 import scala.concurrent.ExecutionContext
@@ -17,18 +18,18 @@ import scala.concurrent.ExecutionContext
 case class RestApiConfig(userAddress: String, conversationAddress: String)
 
 
-class EnviromentInterceptor extends ClientInterceptor {
-  override def interceptCall[ReqT, RespT](method: MethodDescriptor[ReqT, RespT], callOptions: CallOptions, next: Channel): ClientCall[ReqT, RespT] = {
-    new ForwardingClientCall.SimpleForwardingClientCall[ReqT, RespT](next.newCall(method, callOptions)) {
-      override def start(responseListener: ClientCall.Listener[RespT], headers: Metadata): Unit =  {
-        println("CLIENT INTERCEPTOR")
-        println(headers)
-        headers.put(Metadata.Key.of("x-custom-header", Metadata.ASCII_STRING_MARSHALLER), Constants.envContext.get())
-        super.start(responseListener, headers)
-      }
-    }
-  }
-}
+//class EnviromentInterceptor extends ClientInterceptor {
+//  override def interceptCall[ReqT, RespT](method: MethodDescriptor[ReqT, RespT], callOptions: CallOptions, next: Channel): ClientCall[ReqT, RespT] = {
+//    new ForwardingClientCall.SimpleForwardingClientCall[ReqT, RespT](next.newCall(method, callOptions)) {
+//      override def start(responseListener: ClientCall.Listener[RespT], headers: Metadata): Unit =  {
+//        println("CLIENT INTERCEPTOR")
+//        println(headers)
+//        headers.put(Metadata.Key.of("x-custom-header", Metadata.ASCII_STRING_MARSHALLER), Constants.envContext.get())
+//        super.start(responseListener, headers)
+//      }
+//    }
+//  }
+//}
 
 object Constants {
   val envContext = Context.keyWithDefault("env", "base")
@@ -83,7 +84,7 @@ object RestApiRunner extends IOApp{
     }
 
     val basechan2 = NettyChannelBuilder.forAddress(config.userAddress, 8081).usePlaintext().build()
-    val chan2 =  ClientInterceptors.intercept(basechan2,new EnviromentInterceptor())
+    val chan2 =  ClientInterceptors.intercept(basechan2)
 
     val client2 = UserServiceFs2Grpc.client[IO, String](chan2,envToMetadata)
     val app = new RestApi(client2)
