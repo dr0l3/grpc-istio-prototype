@@ -17,6 +17,20 @@ object TracingKeys {
 case class TraceHeaders(traceId: String, spanId: String)
 
 
+
+// This is a very hackish solution.
+// Istio will only propagate zipkin headers and will ignore the tracing headers that
+// Open tracing and other jaeger instrumentation libraries use.
+// The only JVM zipkin based instrumentation library is Brave
+// However brave does not work with IO/ZIO/<non-blocking abstraction of choice>
+// It seems this is due to relying on ThreadLocals.
+
+// To work around this we use this small instrumentation library for getting the basics working
+// The Metadata class will be mutated by intercepted call and the changes made in one client call
+// will be visible in subsequent calls.
+// Futhermore it is possible to have multiple values for the same key.
+// Only the latest value will be propagated
+// So we get the first span/trace and use that as the base.
 class ZipkinClientInterceptor extends ClientInterceptor {
 
   def generateId(): String = {
