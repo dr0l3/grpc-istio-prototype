@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: users
-          image: dr0l3/grpc-users
+          image: localhost:32000/grpc-users
           ports:
             - containerPort: 8081
               name: grpc
@@ -61,7 +61,7 @@ spec:
     spec:
       containers:
         - name: users
-          image: dr0l3/grpc-users
+          image: localhost:32000/grpc-users
           ports:
             - containerPort: 8081
               name: grpc

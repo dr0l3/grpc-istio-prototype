@@ -2,6 +2,10 @@
 
 go to microk8s.io
 
+Make sure to enable both local istio, dns and ingress.
+
+Addtionally enable registry and follow [this guide](https://microk8s.io/docs/registry-built-in) for setting up usage of local images. 
+
 ``sudo snap alias microk8s.kubectl mkcl``
 
 # install service

@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: messages
-          image: dr0l3/grpc-messages
+          image: localhost:32000/grpc-messages
           ports:
             - containerPort: 8082
               name: grpc
@@ -61,7 +61,7 @@ spec:
     spec:
       containers:
         - name: messages
-          image: dr0l3/grpc-messages
+          image: localhost:32000/grpc-messages
           ports:
             - containerPort: 8082
               name: grpc

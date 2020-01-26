@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: orchestrator
-          image: dr0l3/grpc-orchestator
+          image: localhost:32000/grpc-orchestator
           ports:
             - containerPort: 8083
               name: grpc
@@ -67,7 +67,7 @@ spec:
     spec:
       containers:
         - name: orchestrator
-          image: dr0l3/grpc-orchestrator
+          image: localhost:32000/grpc-orchestrator
           ports:
             - containerPort: 8083
               name: grpc
