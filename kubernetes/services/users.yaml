@@ -34,6 +34,9 @@ spec:
             - containerPort: 8081
               name: grpc
           imagePullPolicy: Always
+          env:
+            - name: JAEGER_SERVICE_NAME
+              value: "users"
       restartPolicy: Always
   selector:
     matchLabels:
@@ -63,6 +66,9 @@ spec:
             - containerPort: 8081
               name: grpc
           imagePullPolicy: Always
+          env:
+            - name: JAEGER_SERVICE_NAME
+              value: "users"
       restartPolicy: Always
   selector:
     matchLabels:

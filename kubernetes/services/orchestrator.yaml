@@ -41,6 +41,8 @@ spec:
               value: "conversations"
             - name: MESSAGES_ADDRESS
               value: "messages"
+            - name: JAEGER_SERVICE_NAME
+              value: "orchestrator"
       restartPolicy: Always
   selector:
     matchLabels:
@@ -77,6 +79,8 @@ spec:
               value: "conversations"
             - name: MESSAGES_ADDRESS
               value: "messages"
+            - name: JAEGER_SERVICE_NAME
+              value: "orchestrator"
       restartPolicy: Always
   selector:
     matchLabels:

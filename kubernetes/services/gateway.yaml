@@ -42,6 +42,8 @@ spec:
               value: "messages"
             - name: ORCHESTATOR_ADDRESS
               value: "orchestrator"
+            - name: JAEGER_SERVICE_NAME
+              value: "gateway"
       restartPolicy: Always
   selector:
     matchLabels:

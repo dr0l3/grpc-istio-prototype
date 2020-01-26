@@ -20,7 +20,12 @@ val http4sSettings = Seq(
 )
 
 val baseDependencies = Seq(
-  libraryDependencies += "com.github.pureconfig" %% "pureconfig" % "0.12.2"
+  libraryDependencies ++= Seq(
+    "com.github.pureconfig" %% "pureconfig" % "0.12.2",
+    "io.opentracing.contrib" % "opentracing-grpc" % "0.2.1",
+    "io.jaegertracing" % "jaeger-core" % "1.1.0",
+    "io.zipkin.brave" % "brave-instrumentation-grpc" % "5.9.1"
+  )
 )
 
 
@@ -42,7 +47,8 @@ val grpcSettings = Seq(
 lazy val protocols = (project in file("protocols"))
   .settings(
     grpcDependencies,
-    grpcSettings
+    grpcSettings,
+    baseDependencies
   ).enablePlugins(Fs2Grpc)
 
 lazy val users =(project in file("users"))

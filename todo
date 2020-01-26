@@ -19,6 +19,13 @@
     - Simple dashboards seem to work
     - jaeger seems to work out of the box
         - Need to propagate tracing headers
+            - Find a way to display all metadata on incoming request
+            - Propagate those relevant headers
+            - Figure out how istio propagates the headers
+            - https://github.com/grpc/grpc-java/issues/6144
+            - It seems that all instrumentation relies on Threadlocals
+                - This does not work with cats IO/ZIO and any other non-blocking version implementation that does not gaurantee execution on the same thread.
+                - This is due to the fact that you are not guaranteed to have the work scheduled on the same thread.
     - kiali seems to work out of the box (admin/admin)
 - pulumi
     - pricing

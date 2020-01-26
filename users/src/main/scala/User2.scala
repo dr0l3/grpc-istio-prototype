@@ -1,10 +1,17 @@
 
+import brave.Tracing
+import brave.grpc.GrpcTracing
+import brave.propagation.B3Propagation
+import brave.rpc.RpcTracing
 import cats.effect.{ExitCode, IO, IOApp}
 import io.grpc.{Metadata, ServerBuilder}
 import users.users._
 import fs2._
 import io.grpc._
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder
+import io.jaegertracing.Configuration
+import io.opentracing.contrib.grpc.TracingServerInterceptor
+import io.opentracing.util.GlobalTracer
 import org.lyranthe.fs2_grpc.java_runtime.implicits._
 
 import scala.collection.mutable.ListBuffer
@@ -30,7 +37,12 @@ class User2 extends UserServiceFs2Grpc[IO, Metadata] {
 
 object Main extends IOApp {
 
-  val userService = ServerInterceptors.intercept(UserServiceFs2Grpc.bindService(new User2()))
+  val tracing = Tracing.newBuilder().propagationFactory(B3Propagation.newFactoryBuilder().build()).build()
+  val rpcTracing = RpcTracing.newBuilder(tracing).build()
+  val grpcTracing = GrpcTracing.create(rpcTracing)
+
+
+  val userService = ServerInterceptors.intercept(UserServiceFs2Grpc.bindService(new User2()), new ListAllHeadersInterceptor(), grpcTracing.newServerInterceptor(), new ListAllHeadersInterceptor())
   override def run(args: List[String]): IO[ExitCode] = {
     NettyServerBuilder
       .forPort(8081)
