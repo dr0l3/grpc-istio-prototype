@@ -49,3 +49,8 @@
 istio experimentsz
 - routing to non-existent destination
 - competing virtual services
+
+
+Additional stuff
+- https://github.com/nilslice/protolock <- blocks changes that are not backwards compatible
+- https://github.com/marcus-sa/pulumi-kubernetes-istio <-- istio definitions

@@ -15,7 +15,7 @@ spec:
             host: users
             subset: green
     - route:
-      - destination:
+      - destination:3
           host: users
           subset: blue
 

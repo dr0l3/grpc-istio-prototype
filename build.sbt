@@ -92,5 +92,16 @@ lazy val gateway = (project in file("rest"))
   )
   .enablePlugins(JavaAppPackaging,DockerPlugin)
 
+lazy val graphql = (project in file("graphql"))
+  .dependsOn(protocols)
+  .settings(
+    scalacOptions ++= Seq("-Ypartial-unification"),
+    http4sSettings,
+    baseDependencies,
+    libraryDependencies += "com.github.ghostdogpr" %% "caliban" % "0.4.2",
+    libraryDependencies += "com.github.ghostdogpr" %% "caliban-cats" % "0.4.2"
+  )
+  .enablePlugins(JavaAppPackaging,DockerPlugin)
+
 lazy val root = (project in file("."))
-  .aggregate(gateway, users, conversations, protocols, orchestator, messages)
+  .aggregate(gateway, users, conversations, protocols, orchestator, messages, graphql)

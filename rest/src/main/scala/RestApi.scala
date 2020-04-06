@@ -144,10 +144,6 @@ class RestApi(
 
 object RestApiRunner extends IOApp {
 
-  val tracing = Tracing.newBuilder().propagationFactory(B3Propagation.newFactoryBuilder().build()).build()
-  val rpcTracing = RpcTracing.newBuilder(tracing).build()
-  val grpcTracing = GrpcTracing.create(rpcTracing)
-
   val config =
     ConfigSource.default.load[RestApiConfig].fold(err => throw new RuntimeException(err.prettyPrint()), identity)
 
